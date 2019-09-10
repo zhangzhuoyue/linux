@@ -1,4 +1,4 @@
-wget是linux上的命令行的下载工具
+ wget是linux上的命令行的下载工具
 如果安装完CentOS后无法使用wget修改yum仓库源，需要安装wget
 
 在centos中执行yum install -y wget成功安装，可是使用wget却提示找不到命令。
