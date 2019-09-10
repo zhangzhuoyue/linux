@@ -1,0 +1,12 @@
+>>> CentOS 7.0默认使用的是firewall作为防火墙，使用iptables必须重新设置一下
+
+1、直接关闭防火墙
+
+systemctl stop firewalld.service          #停止firewall
+systemctl disable firewalld.service    #禁止firewall开机启动
+
+
+2开启防火墙
+保存退出后
+systemctl restart iptables.service #重启防火墙使配置生效
+systemctl enable iptables.service #设置防火墙开机启动

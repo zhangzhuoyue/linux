@@ -1,0 +1,16 @@
+wget是linux上的命令行的下载工具
+如果安装完CentOS后无法使用wget修改yum仓库源，需要安装wget
+
+在centos中执行yum install -y wget成功安装，可是使用wget却提示找不到命令。
+
+只好自己在官网下载编译安装。
+1.下载wget…tar.gz文件，拷贝到linux
+https://mirrors.ustc.edu.cn/gnu/wget/
+2.解压tar -zxvf wget…tar.gz
+3.cd到解压后的文件夹，可以看到configure命令
+./configure --with-ssl=openssl
+make
+make install
+然后就可以使用了。
+
+wget命令默认位置：/usr/local/bin/wget
