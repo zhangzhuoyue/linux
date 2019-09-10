@@ -1,4 +1,4 @@
-是否想改唱歌  /etc/sysconfig/network-scripts/ifcfg-en
+是否想改唱歌   /etc/sysconfig/network-scripts/ifcfg-en
 
 输入ip查询命名 ip addr 也可以输入ifconfig（centOs7没有ifconfig命令）查看ip，但此命令会出现3个条目，centos的ip地址是ens33条目中的inet值。
 
