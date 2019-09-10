@@ -1,5 +1,5 @@
 
-输入ip查询命名 ip addr 也可以输入 ifconfig（centOs7没有ifconfig命令）查看ip，但此命令会出现3个条目，centos的ip地址是ens33条目中的inet值。
+输入ip查询命名 ip addr 也可以输入ifconfig（centOs7没有ifconfig命令）查看ip，但此命令会出现3个条目，centos的ip地址是ens33条目中的inet值。
 
 发现 ens33 没有 inet 这个属性，那么就没法通过IP地址连接虚拟机。
 
