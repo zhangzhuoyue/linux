@@ -1,0 +1,153 @@
+NAT
+使用NAT技术，主机能上网，虚拟机就可以访问Internet，但是主机不能访问虚拟机。
+
+桥接 联网方式：
+这一种联网方式最简单，在局域网内，你的主机是怎么联网的，你在虚拟机里就怎么连网。把虚拟机看成局域网内的另一台电脑就行了！
+提示：主机网卡处在一个可以访问Internet的局域网中，虚拟机才能通过Bridge访问Internet。
+
+Host-Only
+提示：Host-only技术只用于主机和虚拟机互访，于访问internet无关。
+三种模式的上网原理：https://www.cnblogs.com/xuyatao/p/9778975.html
+
+
+Linux最小安装模式下：
+
+1.配置网络：
+
+在最小化安装的CentOS7中，ifconfig是不能使用的，查看网卡信息的命令是
+ip addr
+其中“ens33”为网卡名称，修改IP地址等信息。对这里面的网络配置进行修改，需要观察使用的哪一种网络模式。如果虚拟机无法连接网络需要修改上网
+开关。
+ONBOOT=yes #自动启用网络连接
+vi /etc/sysconfig/network-scripts/ifcfg-ens33
+如果修改了配置文件需要重启网络。
+[root@centos7 ~]# service network restart
+
+2.安装ifconfig命令
+在最小安装情况下，没有这个命令。
+指令用来配置网络接口参数，同时还可以显示当前内核网络接口的工作状态
+yum provides ifconfig
+ifconfig命令依赖于net-tools的，安装
+yum install -y net-tools
+如果第一个命令失败，则执行第二个命令。然后在执行第一个命令。
+
+3.安装vim编辑器
+yum install -y vim-enhanced
+
+4. 安装wget
+wget是一个下载文件的工具，它用在命令行下。对于Linux用户是必不可少的工具，我们经常要下载一些软件或从远程服务器恢复备份到本地服务器。
+yum install -y wget
+
+5.关闭SELinux
+SElinux是强制访问控制(MAC)安全系统，是linux历史上最杰出的新安全系统。
+对于linux安全模块来说，SElinux的功能是最全面的，测试也是最充分的，这是一种基于内核的安全系统。
+vim /etc/selinux/config
+注释掉2行代码，并在最后添加1行代码
+
+#SELINUX=enforcing
+#SELINUXTYPE=targeted
+SELINUX=disabled
+保存并关闭，使设置启用，最好重启一下系统，也可以稍后重启
+
+setenforce 0
+
+6.安装iptables防火墙
+关于数据包过滤机制有两个软件：firewalld与iptables
+ iptables通过控制端口来控制服务，而firewalld则是通过控制协议来控制端口
+yum install -y iptables-services
+重启iptables，并添加到开机自启项中，查看iptables状态
+
+[root@centos7 ~]# systemctl restart iptables.service
+[root@centos7 ~]# systemctl enable iptables.service
+
+
+
+7.配置yum源
+基于RPM包管理，能够从指定的服务器自动下载RPM包并且安装，可以自动处理依赖性关系，并且一次安装所有依赖的软体包，无须繁琐地一次次下载，安装。
+默认的yum源是国外网站，将yum源换成国内的是为了下载速度更快
+1）新建文件夹，保存系统中原来的repo文件
+
+[root@centos7 ~]# cd /etc/yum.repos.d/
+[root@centos7 yum.repos.d]# mkdir repo_bak
+[root@centos7 yum.repos.d]# mv *.repo repo_bak/
+2）下载阿里云和网易对应系统的repo文件
+[root@centos7 yum.repos.d]# wget http://mirrors.aliyun.com/repo/Centos-7.repo
+[root@centos7 yum.repos.d]# wget http://mirrors.163.com/.help/CentOS7-Base-163.repo
+
+
+3）清楚系统yum缓存，并生成新的yum缓存
+
+[root@centos7 yum.repos.d]# yum clean all
+[root@centos7 yum.repos.d]# yum makecache
+
+
+
+
+8 配置epel源
+
+1）安装epel-release，安装成功后，会自动生成epel.repo和epel-testing.repo两个文件
+我们用yum安装软件时,经常发现我们的yum源里面没有该软件，需要自己去wge。epel里面有1万多个软件，比163的源还强，强烈建议安装。主要是里面的软件更多
+
+[root@centos7 yum.repos.d]# yum list | grep epel-release
+[root@centos7 yum.repos.d]# yum install -y epel-release
+
+[root@centos7 yum.repos.d]# wget -O /etc/yum.repos.d/epel-7.repo http://mirrors.aliyun.com/repo/epel-7.repo
+
+
+再次清除系统yum缓存，并重新生成yum缓存
+
+[root@centos7 yum.repos.d]# yum clean all
+
+[root@centos7 yum.repos.d]# yum makecache
+
+
+9 查看系统可用的yum源和所有的yum源
+
+[root@centos7 yum.repos.d]# yum repolist enabled
+[root@centos7 yum.repos.d]# yum repolist all
+
+
+
+
+10  修改hostname主机名
+
+3.8.1 hostnamectl
+
+[root@localhost ~]# hostnamectl
+   Static hostname: localhost.localdomain
+         Icon name: computer-vm
+           Chassis: vm
+        Machine ID: 8dbe281bfa3d4b3c9390c26f494db334
+           Boot ID: b629ca855d3e4406ab886fe709d2f917
+    Virtualization: vmware
+  Operating System: CentOS Linux 7 (Core)
+       CPE OS Name: cpe:/o:centos:centos:7
+            Kernel: Linux 3.10.0-514.el7.x86_64
+      Architecture: x86-64
+
+修改主机名的命令
+[root@localhost ~]# hostnamectl set-hostname CentOS
+[root@localhost ~]# hostnamectl
+   Static hostname: centos
+   Pretty hostname: CentOS
+         Icon name: computer-vm
+           Chassis: vm
+        Machine ID: 8dbe281bfa3d4b3c9390c26f494db334
+           Boot ID: b629ca855d3e4406ab886fe709d2f917
+    Virtualization: vmware
+  Operating System: CentOS Linux 7 (Core)
+       CPE OS Name: cpe:/o:centos:centos:7
+            Kernel: Linux 3.10.0-514.el7.x86_64
+      Architecture: x86-64
+[root@localhost ~]# hostname
+centos
+ 修改主机名文件
+
+[root@localhost ~]# vi /etc/hostname
+
+
+
+
+
+
+
