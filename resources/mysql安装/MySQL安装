@@ -59,7 +59,8 @@
 6）、validate_password_special_char_count 整个密码中至少要包含特殊字符的个数；
 
 
-
+4 查看当前的MySQL版本
+-->select version();
 
 
 
