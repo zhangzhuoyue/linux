@@ -1,0 +1,66 @@
+安装前说明：
+ 在CentOS7中默认安装有MariaDB，这个是MySQL的分支，但为了需要，还是要在系统中安装MySQL，而且安装完成之后可以直接覆盖掉MariaDB。
+
+ 安装步骤：
+
+1. 下载并安装MySQL官方的 Yum Repository
+
+[root@BrianZhu /]# wget -i -c http://dev.mysql.com/get/mysql57-community-release-el7-10.noarch.rpm
+使用上面的命令就直接下载了安装用的Yum Repository，大概25KB的样子，然后就可以直接yum安装了。
+
+[root@BrianZhu /]# yum -y install mysql57-community-release-el7-10.noarch.rpm
+下面就是使用yum安装MySQL了
+
+[root@BrianZhu /]# yum -y install mysql-community-server
+这步可能会花些时间，安装完成后就会覆盖掉之前的mariadb。
+
+
+2. MySQL数据库设置
+首先启动MySQL
+
+[root@BrianZhu /]# systemctl start  mysqld.service
+查看MySQL运行状态，运行状态如图：
+
+[root@BrianZhu /]# systemctl status mysqld.service
+
+
+此时MySQL已经开始正常运行，不过要想进入MySQL还得先找出此时root用户的密码，通过如下命令可以在日志文件中找出密码：
+[root@BrianZhu /]# grep "password" /var/log/mysqld.log
+
+
+3 密码设置
+设置密码出现异常：Your password does not satisfy the current policy requirements
+
+1、查看 mysql 初始的密码策略，
+输入语句 “ SHOW VARIABLES LIKE 'validate_password%'; ” 进行查看，
+
+2、首先需要设置密码的验证强度等级，设置 validate_password_policy 的全局参数为 LOW 即可，
+输入设值语句 “ set global validate_password_policy=LOW; ” 进行设值，
+
+3、当前密码长度为 8 ，如果不介意的话就不用修改了，按照通用的来讲，设置为 6 位的密码，设置 validate_password_length 的全局参数为 6 即可，
+输入设值语句 “ set global validate_password_length=6; ” 进行设值，
+
+
+4、现在可以为 mysql 设置简单密码了，只要满足六位的长度即可，
+输入修改语句 “ ALTER USER 'root'@'localhost' IDENTIFIED BY '123456'; ” 可以看到修改成功，表示密码策略修改成功了！！！
+
+
+
+关于 mysql 密码策略相关参数；
+1）、validate_password_length  固定密码的总长度；
+2）、validate_password_dictionary_file 指定密码验证的文件路径；
+3）、validate_password_mixed_case_count  整个密码中至少要包含大/小写字母的总个数；
+4）、validate_password_number_count  整个密码中至少要包含阿拉伯数字的个数；
+5）、validate_password_policy 指定密码的强度验证等级，默认为 MEDIUM；
+关于 validate_password_policy 的取值：
+0/LOW：只验证长度；
+1/MEDIUM：验证长度、数字、大小写、特殊字符；
+2/STRONG：验证长度、数字、大小写、特殊字符、字典文件；
+6）、validate_password_special_char_count 整个密码中至少要包含特殊字符的个数；
+
+
+
+
+
+
+
