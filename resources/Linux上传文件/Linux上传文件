@@ -1,0 +1,7 @@
+上传文件
+
+若username1无法上传文件到指定目录，比如tomcat/webapps下（无权限），
+可以先将文件上传至user1的用户目录：/home/user1，然后使用cp命令拷贝到指定文件夹。
+cp /home/jsdxadm/main.js /gxxj/apache-tomcat-7.0.78-ins/webapps/ins/js/
+
+
