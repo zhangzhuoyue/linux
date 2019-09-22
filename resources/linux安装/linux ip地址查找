@@ -10,4 +10,4 @@ vi是Linux内置的文本编辑器命令 打开文件的意思
 
 把这一项改为YES（ONBOOT=yes）
 
-然后重启网络服务： sudo service network restart
+然后重启网络服务： sudo service nepingtwork restart

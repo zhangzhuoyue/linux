@@ -28,6 +28,7 @@ NETMASK=255.255.255.0
 GATEWAY=192.168.25.2（网关）
 查看Vmware的设置，  查看他的网关 ip。linux中的网关和他设置的一样，ip在一个网段就可以
 
+
 如果修改了配置文件需要重启网络。
 [root@centos7 ~]# service network restart
 
